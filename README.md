@@ -5,6 +5,20 @@
 </p>
 <h1 align="center">z-notify-admin-vue</h1>
 <h5 align="center">应用统一在线管理平台(web)</h5>
+
+## 链接
+
+* 后台管理页面地址：[https://admin.z-notify.zxlee.cn](https://admin.z-notify.zxlee.cn)
+
+* API文档地址：[https://api.z-notify.zxlee.cn/swagger-ui/index.html](https://api.z-notify.zxlee.cn/swagger-ui/index.html)
+
+* API接口地址：[https://api.z-notify.zxlee.cn](https://api.z-notify.zxlee.cn)
+
+* API源码地址：[https://github.com/SmileZXLee/z-notify-api](https://github.com/SmileZXLee/z-notify-api)
+
+预览
+----
+[https://admin.z-notify.zxlee.cn](https://admin.z-notify.zxlee.cn)
  
 项目下载和运行
 ----
