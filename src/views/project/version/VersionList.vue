@@ -3,15 +3,32 @@
     <a-card :bordered="false" style="margin-bottom: 10px">
       <a-row :gutter="10">
         <a-col :span="20" style="display: flex;align-items: center;">
-          <strong style="margin-right: 10px">通知API:</strong>
-          <a-input style="flex: 1;" :value="noticeApiUrl" readonly></a-input>
+          <strong style="margin-right: 10px">版本API:</strong>
+          <a-input style="flex: 1;" :value="versionApiUrl" readonly></a-input>
         </a-col>
         <a-col :span="4">
-          <a-button :span="4" type="primary" v-clipboard:copy="noticeApiUrl" v-clipboard:success="onCopySuccess">复制到剪贴板</a-button>
+          <a-button :span="4" type="primary" v-clipboard:copy="versionApiUrl" v-clipboard:success="onCopySuccess">复制到剪贴板</a-button>
         </a-col>
       </a-row>
     </a-card>
     <a-card :bordered="false">
+      <div class="table-page-search-wrapper">
+        <a-form layout="inline">
+          <a-row :gutter="48">
+            <a-col :md="8" :sm="24">
+              <a-form-item label="版本号">
+                <a-input v-model="queryParam.keyword" placeholder="请输入版本号"/>
+              </a-form-item>
+            </a-col>
+            <a-col :md="16" :sm="16">
+              <span class="table-page-search-submitButtons" style="display: flex;justify-content: flex-end;">
+                <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
+                <a-button style="margin-left: 8px" @click="() => this.queryParam = {}">重置</a-button>
+              </span>
+            </a-col>
+          </a-row>
+        </a-form>
+      </div>
       <div class="table-operator">
         <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
       </div>
@@ -30,26 +47,24 @@
             <a-divider type="vertical" />
             <a-popconfirm
               placement="topLeft"
-              title="确定要删除这条通知吗？"
+              title="确定要删除这个版本吗？"
               ok-text="删除"
               cancel-text="取消"
-              @confirm="handleDeleteNotice(record)"
+              @confirm="handleDelete(record)"
             >
               <a style="color:red">删除</a>
             </a-popconfirm>
           </template>
         </span>
-
         <span slot="content" slot-scope="text">
-          <ellipsis :length="15" tooltip>{{ text }}</ellipsis>
+          <ellipsis :length="30" tooltip>{{ text }}</ellipsis>
         </span>
-
-        <span slot="status" slot-scope="status">
-          <a-badge :status="status ? 'success' : 'error'" :text="status ? '有效' : '已过期'" />
+        <span slot="download_url" slot-scope="text">
+          <ellipsis :length="30" tooltip>{{ text }}</ellipsis>
         </span>
       </s-table>
 
-      <create-notice
+      <create-version
         ref="createModal"
         :visible="visible"
         :loading="confirmLoading"
@@ -63,32 +78,26 @@
 </template>
 
 <script>
-import moment from 'moment'
 import { STable, Ellipsis } from '@/components'
-import { getNoticeList, createNotice, updateNotice, deleteNotice } from '@/api/notice'
+import { getVersionList, createVersion, updateVersion, deleteVersion } from '@/api/version'
 
 import StepByStepModal from '../modules/StepByStepModal'
-import CreateNotice from '../modules/CreateNotice'
+import CreateVersion from '../modules/CreateVersion'
 
 const columns = [
   {
-    title: '通知标题',
-    dataIndex: 'title'
+    title: '版本号',
+    dataIndex: 'version'
   },
   {
-    title: '通知内容',
+    title: '更新内容',
     dataIndex: 'content',
     scopedSlots: { customRender: 'content' }
   },
   {
-    title: '过期时间',
-    dataIndex: 'expiretime',
-    customRender: expiretime => expiretime || '永不过期'
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    scopedSlots: { customRender: 'status' }
+    title: '下载地址',
+    dataIndex: 'download_url',
+    scopedSlots: { customRender: 'download_url' }
   },
   {
     title: '操作',
@@ -103,7 +112,7 @@ export default {
   components: {
     STable,
     Ellipsis,
-    CreateNotice,
+    CreateVersion,
     StepByStepModal
   },
   data () {
@@ -116,16 +125,18 @@ export default {
       visible: false,
       confirmLoading: false,
       mdl: null,
-      // 高级搜索 展开/关闭
-      advanced: false,
+      currentDowenloadUrl: '',
       // 查询参数
       queryParam: {},
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         const requestParameters = Object.assign({}, parameter, this.queryParam)
         console.log('loadData request parameters:', requestParameters)
-        return getNoticeList(this.projectId, requestParameters)
+        return getVersionList(this.projectId, requestParameters)
           .then(res => {
+            if (res.data.results.length) {
+              this.currentDowenloadUrl = res.data.results[0].download_url
+            }
             return res.data
           })
       },
@@ -134,13 +145,14 @@ export default {
     }
   },
   computed: {
-    noticeApiUrl () {
-      return this.projectId ? `${process.env.VUE_APP_API_BASE_URL}/v1/public/notices/${this.projectId}` : '无'
+    versionApiUrl () {
+      return this.projectId ? `${process.env.VUE_APP_API_BASE_URL}/v1/public/versions/${this.projectId}/当前版本号` : '无'
     }
   },
   methods: {
     handleAdd () {
-      this.mdl = null
+      console.log(this.$route.params)
+      this.mdl = { download_url: this.currentDowenloadUrl }
       this.visible = true
     },
     handleEdit (record) {
@@ -154,8 +166,8 @@ export default {
         if (!errors) {
           values.project_id = this.projectId
           if (values.id) {
-            // 新增
-            updateNotice(values).then(res => {
+            // 更新
+            updateVersion(values).then(res => {
               this.visible = false
               // 重置表单数据
               form.resetFields()
@@ -169,7 +181,7 @@ export default {
             })
           } else {
             // 新增
-            createNotice(values).then(res => {
+            createVersion(values).then(res => {
               this.visible = false
               // 重置表单数据
               form.resetFields()
@@ -193,8 +205,8 @@ export default {
       const form = this.$refs.createModal.form
       form.resetFields() // 清理表单数据（可不做）
     },
-    handleDeleteNotice (record) {
-      deleteNotice(record.id).then(res => {
+    handleDelete (record) {
+      deleteVersion(record.id).then(res => {
         this.$refs.table.refresh()
         this.$message.success('删除成功')
       })
@@ -205,14 +217,6 @@ export default {
     },
     onCopySuccess () {
       this.$message.success('已复制到剪贴板')
-    },
-    toggleAdvanced () {
-      this.advanced = !this.advanced
-    },
-    resetSearchForm () {
-      this.queryParam = {
-        date: moment(new Date())
-      }
     }
   }
 }

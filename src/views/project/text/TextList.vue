@@ -1,5 +1,5 @@
 <template>
-  <page-header-wrapper>
+  <page-header-wrapper :title="`${projectName}-${pageTitle}`">
     <a-card :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
@@ -46,10 +46,7 @@
           </template>
         </span>
         <span slot="value" slot-scope="text">
-          <a-tooltip>
-            <template #title>{{ text }}</template>
-            <ellipsis :length="15" tooltip>{{ text }}</ellipsis>
-          </a-tooltip>
+          <ellipsis :length="15" tooltip>{{ text }}</ellipsis>
         </span>
         <span slot="api_address" slot-scope="text, record">
           <template>
@@ -72,7 +69,6 @@
 </template>
 
 <script>
-import moment from 'moment'
 import { STable, Ellipsis } from '@/components'
 import { getTextList, createText, updateText, deleteText } from '@/api/text'
 
@@ -106,25 +102,6 @@ const columns = [
   }
 ]
 
-const statusMap = {
-  0: {
-    status: 'default',
-    text: '关闭'
-  },
-  1: {
-    status: 'processing',
-    text: '运行中'
-  },
-  2: {
-    status: 'success',
-    text: '已上线'
-  },
-  3: {
-    status: 'error',
-    text: '异常'
-  }
-}
-
 export default {
   name: 'NoticeList',
   components: {
@@ -136,20 +113,20 @@ export default {
   data () {
     this.columns = columns
     return {
-      id: this.$route.params.id,
+      projectId: this.$route.query.projectId,
+      projectName: this.$route.query.projectName,
+      pageTitle: this.$route.meta.title,
       // create model
       visible: false,
       confirmLoading: false,
       mdl: null,
-      // 高级搜索 展开/关闭
-      advanced: false,
       // 查询参数
       queryParam: {},
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         const requestParameters = Object.assign({}, parameter, this.queryParam)
         console.log('loadData request parameters:', requestParameters)
-        return getTextList(this.id, requestParameters)
+        return getTextList(this.projectId, requestParameters)
           .then(res => {
             return res.data
           })
@@ -158,25 +135,8 @@ export default {
       selectedRows: []
     }
   },
-  filters: {
-    statusFilter (type) {
-      return statusMap[type].text
-    },
-    statusTypeFilter (type) {
-      return statusMap[type].status
-    }
-  },
-  computed: {
-    rowSelection () {
-      return {
-        selectedRowKeys: this.selectedRowKeys,
-        onChange: this.onSelectChange
-      }
-    }
-  },
   methods: {
     handleAdd () {
-      console.log(this.$route.params)
       this.mdl = null
       this.visible = true
     },
@@ -189,7 +149,7 @@ export default {
       this.confirmLoading = true
       form.validateFields((errors, values) => {
         if (!errors) {
-          values.project_id = this.id
+          values.project_id = this.projectId
           if (values.id) {
             // 新增
             updateText(values).then(res => {
@@ -243,16 +203,8 @@ export default {
     onCopySuccess () {
       this.$message.success('已复制到剪贴板')
     },
-    toggleAdvanced () {
-      this.advanced = !this.advanced
-    },
-    resetSearchForm () {
-      this.queryParam = {
-        date: moment(new Date())
-      }
-    },
     getApiAddress (record) {
-      return record.key ? `${process.env.VUE_APP_API_BASE_URL}/v1/public/texts/${this.id}/${record.key}` : '无'
+      return record.key ? `${process.env.VUE_APP_API_BASE_URL}/v1/public/text/${this.projectId}/${record.key}` : '无'
     }
   }
 }

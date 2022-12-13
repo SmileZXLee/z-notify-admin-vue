@@ -71,14 +71,21 @@ export const asyncRouterMap = [
                 name: 'NoticeList',
                 hide: true,
                 component: () => import('@/views/project/notice/NoticeList'),
-                meta: { title: '通知列表', hidden: true, permission: ['table'] }
+                meta: { title: '通知管理', hidden: true, permission: ['table'] }
               },
               {
-                path: '/project/text-list/:id',
+                path: '/project/text-list',
                 name: 'TextList',
                 hide: true,
                 component: () => import('@/views/project/text/TextList'),
-                meta: { title: '文本列表', hidden: true, permission: ['table'] }
+                meta: { title: '文本管理', hidden: true, permission: ['table'] }
+              },
+              {
+                path: '/project/version-list',
+                name: 'VersionList',
+                hide: true,
+                component: () => import('@/views/project/version/VersionList'),
+                meta: { title: '版本管理', hidden: true, permission: ['table'] }
               }
             ]
           }

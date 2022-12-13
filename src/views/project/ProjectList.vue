@@ -37,7 +37,7 @@
             <a-divider type="vertical" />
             <a-popconfirm
               placement="topLeft"
-              title="删除项目将同时删除项目中的所有通知，确定要删除吗？"
+              title="删除项目将同时删除项目下的所有子项，确定要删除吗？"
               ok-text="删除"
               cancel-text="取消"
               @confirm="handleDeleteProject(record)"
@@ -51,6 +51,9 @@
           {{ text || '添加' }}
         </a-button>
         <a-button type="link" slot="text_count" slot-scope="text,record" @click="handle2Text(record)">
+          {{ text || '添加' }}
+        </a-button>
+        <a-button type="link" slot="version_count" slot-scope="text,record" @click="handle2Version(record)">
           {{ text || '添加' }}
         </a-button>
       </s-table>
@@ -69,7 +72,6 @@
 </template>
 
 <script>
-import moment from 'moment'
 import { STable, Ellipsis } from '@/components'
 import { getProjectList, createProject, updateProject, deleteProject } from '@/api/project'
 
@@ -96,31 +98,17 @@ const columns = [
     scopedSlots: { customRender: 'text_count' }
   },
   {
+    title: '版本数',
+    dataIndex: 'version_count',
+    scopedSlots: { customRender: 'version_count' }
+  },
+  {
     title: '操作',
     dataIndex: 'action',
     width: '150px',
     scopedSlots: { customRender: 'action' }
   }
 ]
-
-const statusMap = {
-  0: {
-    status: 'default',
-    text: '关闭'
-  },
-  1: {
-    status: 'processing',
-    text: '运行中'
-  },
-  2: {
-    status: 'success',
-    text: '已上线'
-  },
-  3: {
-    status: 'error',
-    text: '异常'
-  }
-}
 
 export default {
   name: 'PorjectList',
@@ -137,8 +125,6 @@ export default {
       visible: false,
       confirmLoading: false,
       mdl: null,
-      // 高级搜索 展开/关闭
-      advanced: false,
       // 查询参数
       queryParam: {},
       // 加载数据方法 必须为 Promise 对象
@@ -152,22 +138,6 @@ export default {
       },
       selectedRowKeys: [],
       selectedRows: []
-    }
-  },
-  filters: {
-    statusFilter (type) {
-      return statusMap[type].text
-    },
-    statusTypeFilter (type) {
-      return statusMap[type].status
-    }
-  },
-  computed: {
-    rowSelection () {
-      return {
-        selectedRowKeys: this.selectedRowKeys,
-        onChange: this.onSelectChange
-      }
     }
   },
   methods: {
@@ -235,19 +205,10 @@ export default {
       this.$router.push({ path: `/project/notice-list`, query: { 'projectId': record.id, 'projectName': record.project_name } })
     },
     handle2Text (record) {
-      this.$router.push({ path: `/project/text-list/${record.id}` })
+      this.$router.push({ path: `/project/text-list`, query: { 'projectId': record.id, 'projectName': record.project_name } })
     },
-    onSelectChange (selectedRowKeys, selectedRows) {
-      this.selectedRowKeys = selectedRowKeys
-      this.selectedRows = selectedRows
-    },
-    toggleAdvanced () {
-      this.advanced = !this.advanced
-    },
-    resetSearchForm () {
-      this.queryParam = {
-        date: moment(new Date())
-      }
+    handle2Version (record) {
+      this.$router.push({ path: `/project/version-list`, query: { 'projectId': record.id, 'projectName': record.project_name } })
     }
   }
 }
