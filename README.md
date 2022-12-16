@@ -16,6 +16,18 @@
 
 * API源码地址：[https://github.com/SmileZXLee/z-notify-api](https://github.com/SmileZXLee/z-notify-api)
 
+
+## 主要功能
+- [x] 版本管理
+
+- [x] 通知管理
+
+- [x] 通用文本管理
+
+- [x] 反馈管理
+
+- [ ] 用户流量统计
+
 预览
 ----
 [https://admin.z-notify.zxlee.cn](https://admin.z-notify.zxlee.cn)
