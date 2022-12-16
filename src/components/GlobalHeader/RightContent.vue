@@ -5,7 +5,7 @@
     </a-tag>
     <avatar-dropdown :menu="showMenu" :current-user="currentUser" :class="prefixCls" />
     <!-- <select-lang :class="prefixCls" /> -->
-    <a target="_blank" href="https://github.com/SmileZXLee" style="color: #000000">
+    <a target="_blank" href="https://github.com/SmileZXLee/z-notify-admin-vue" style="color: #000000">
       <a-icon style="font-size: 20px;margin: 0px 10px" type="github"></a-icon>
     </a>
   </div>

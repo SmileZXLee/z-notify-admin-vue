@@ -86,6 +86,13 @@ export const asyncRouterMap = [
                 hide: true,
                 component: () => import('@/views/project/version/VersionList'),
                 meta: { title: '版本管理', hidden: true, permission: ['table'] }
+              },
+              {
+                path: '/project/feedback-list',
+                name: 'FeedbackList',
+                hide: true,
+                component: () => import('@/views/project/feedback/FeedbackList'),
+                meta: { title: '反馈管理', hidden: true, permission: ['table'] }
               }
             ]
           }

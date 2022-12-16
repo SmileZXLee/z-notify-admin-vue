@@ -1,5 +1,16 @@
 <template>
   <page-header-wrapper>
+    <a-card :bordered="false" style="margin-bottom: 10px">
+      <a-row :gutter="10">
+        <a-col :span="20" style="display: flex;align-items: center;">
+          <strong style="margin-right: 10px">API文档地址:</strong>
+          <a-input style="flex: 1;" :value="swaggerApiUrl" readonly></a-input>
+        </a-col>
+        <a-col :span="4">
+          <a-button :span="4" type="primary" @click="onSwaggerApiUrl">在浏览器中打开</a-button>
+        </a-col>
+      </a-row>
+    </a-card>
     <a-card :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
@@ -56,6 +67,9 @@
         <a-button type="link" slot="version_count" slot-scope="text,record" @click="handle2Version(record)">
           {{ text || '添加' }}
         </a-button>
+        <a-button type="link" slot="feedback_count" slot-scope="text,record" @click="handle2Feedback(record)">
+          {{ text || '配置' }}
+        </a-button>
       </s-table>
 
       <create-form
@@ -84,10 +98,6 @@ const columns = [
     dataIndex: 'project_name'
   },
   {
-    title: '创建时间',
-    dataIndex: 'createtime'
-  },
-  {
     title: '通知数',
     dataIndex: 'notice_count',
     scopedSlots: { customRender: 'notice_count' }
@@ -101,6 +111,11 @@ const columns = [
     title: '版本数',
     dataIndex: 'version_count',
     scopedSlots: { customRender: 'version_count' }
+  },
+  {
+    title: '反馈数',
+    dataIndex: 'feedback_count',
+    scopedSlots: { customRender: 'feedback_count' }
   },
   {
     title: '操作',
@@ -138,6 +153,11 @@ export default {
       },
       selectedRowKeys: [],
       selectedRows: []
+    }
+  },
+  computed: {
+    swaggerApiUrl () {
+      return `${process.env.VUE_APP_API_BASE_URL}/swagger-ui/index.html`
     }
   },
   methods: {
@@ -189,6 +209,9 @@ export default {
         }
       })
     },
+    onSwaggerApiUrl () {
+      window.open(this.swaggerApiUrl)
+    },
     handleCancel () {
       this.visible = false
 
@@ -209,6 +232,9 @@ export default {
     },
     handle2Version (record) {
       this.$router.push({ path: `/project/version-list`, query: { 'projectId': record.id, 'projectName': record.project_name } })
+    },
+    handle2Feedback (record) {
+      this.$router.push({ path: `/project/feedback-list`, query: { 'projectId': record.id, 'projectName': record.project_name } })
     }
   }
 }

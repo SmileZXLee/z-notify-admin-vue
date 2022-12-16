@@ -3,7 +3,7 @@
   <div id="userLayout" :class="['user-layout-wrapper', isMobile && 'mobile']">
     <div class="container">
       <div class="user-layout-lang">
-        <a target="_blank" href="https://github.com/SmileZXLee" style="color: #000000">
+        <a target="_blank" href="https://github.com/SmileZXLee/z-notify-admin-vue" style="color: #000000">
           <a-icon style="font-size: 20px;margin: 0px 10px" type="github"></a-icon>
         </a>
       </div>
@@ -16,7 +16,7 @@
             </a>
           </div>
           <div class="desc">
-            应用统一在线服务平台
+            一个开源的应用统一在线管理平台
           </div>
         </div>
 

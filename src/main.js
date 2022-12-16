@@ -11,6 +11,8 @@ import { VueAxios } from './utils/request'
 import ProLayout, { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import themePluginConfig from '../config/themePluginConfig'
 import VueClipboard from 'vue-clipboard2'
+import VueViewer from 'v-viewer'
+import 'viewerjs/dist/viewer.css'
 
 // mock
 // WARNING: `mockjs` NOT SUPPORT `IE` PLEASE DO NOT USE IN `production` ENV.
@@ -27,6 +29,7 @@ Vue.config.productionTip = false
 // mount axios to `Vue.$http` and `this.$http`
 Vue.use(VueAxios)
 Vue.use(VueClipboard)
+Vue.use(VueViewer)
 // use pro-layout components
 Vue.component('pro-layout', ProLayout)
 Vue.component('page-container', PageHeaderWrapper)

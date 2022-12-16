@@ -4,7 +4,7 @@
     <img alt="logo" src="https://admin.z-notify.zxlee.cn/logo.png" width="120" height="120" style="margin-bottom: 50px;">
 </p>
 <h1 align="center">z-notify-admin-vue</h1>
-<h5 align="center">应用统一在线管理平台(web)</h5>
+<h5 align="center">一个开源的应用统一在线管理平台(web)</h5>
 
 ## 链接
 
