@@ -10,9 +10,9 @@
 
 * 后台管理页面地址：[https://admin.z-notify.zxlee.cn](https://admin.z-notify.zxlee.cn)
 
-* API文档地址：[https://api.z-notify.zxlee.cn/swagger-ui/index.html](https://api.z-notify.zxlee.cn/swagger-ui/index.html)
+* 公共页(反馈页)源码地址：[https://github.com/SmileZXLee/z-notify-public](https://github.com/SmileZXLee/z-notify-public)
 
-* API接口地址：[https://api.z-notify.zxlee.cn](https://api.z-notify.zxlee.cn)
+* API文档地址：[https://api.z-notify.zxlee.cn/swagger-ui/index.html](https://api.z-notify.zxlee.cn/swagger-ui/index.html)
 
 * API源码地址：[https://github.com/SmileZXLee/z-notify-api](https://github.com/SmileZXLee/z-notify-api)
 
