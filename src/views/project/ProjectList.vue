@@ -44,11 +44,9 @@
       >
         <span slot="action" slot-scope="text, record">
           <template>
-            <a @click="handleEdit(record)">编辑</a>
-            <a-divider type="vertical" />
             <a-popconfirm
               placement="topLeft"
-              title="删除项目将同时删除项目下的所有子项，确定要删除吗？"
+              title="删除项目将同时删除项目下的所有关联数据，确定要删除吗？"
               ok-text="删除"
               cancel-text="取消"
               @confirm="handleDeleteProject(record)"
@@ -58,17 +56,20 @@
           </template>
         </span>
 
-        <a-button type="link" slot="notice_count" slot-scope="text,record" @click="handle2Notice(record)">
+        <a-button type="link" slot="notice_count" slot-scope="text,record" @click="handle2Page('notice', record)">
           {{ text || '添加' }}
         </a-button>
-        <a-button type="link" slot="text_count" slot-scope="text,record" @click="handle2Text(record)">
+        <a-button type="link" slot="text_count" slot-scope="text,record" @click="handle2Page('text', record)">
           {{ text || '添加' }}
         </a-button>
-        <a-button type="link" slot="version_count" slot-scope="text,record" @click="handle2Version(record)">
+        <a-button type="link" slot="version_count" slot-scope="text,record" @click="handle2Page('version', record)">
           {{ text || '添加' }}
         </a-button>
-        <a-button type="link" slot="feedback_count" slot-scope="text,record" @click="handle2Feedback(record)">
+        <a-button type="link" slot="feedback_count" slot-scope="text,record" @click="handle2Page('feedback', record)">
           {{ text || '配置' }}
+        </a-button>
+        <a-button type="link" slot="statistics" slot-scope="text,record" @click="handle2Page('statistics', record)">
+          {{ '前往' }}
         </a-button>
       </s-table>
 
@@ -95,32 +96,44 @@ import CreateForm from './modules/CreateForm'
 const columns = [
   {
     title: '项目名称',
+    align: 'center',
     dataIndex: 'project_name'
   },
   {
     title: '通知数',
     dataIndex: 'notice_count',
+    align: 'center',
     scopedSlots: { customRender: 'notice_count' }
   },
   {
     title: '文本数',
     dataIndex: 'text_count',
+    align: 'center',
     scopedSlots: { customRender: 'text_count' }
   },
   {
     title: '版本数',
     dataIndex: 'version_count',
+    align: 'center',
     scopedSlots: { customRender: 'version_count' }
   },
   {
     title: '反馈数',
     dataIndex: 'feedback_count',
+    align: 'center',
     scopedSlots: { customRender: 'feedback_count' }
+  },
+  {
+    title: '访问统计',
+    dataIndex: 'statistics',
+    align: 'center',
+    scopedSlots: { customRender: 'statistics' }
   },
   {
     title: '操作',
     dataIndex: 'action',
     width: '150px',
+    align: 'center',
     scopedSlots: { customRender: 'action' }
   }
 ]
@@ -224,17 +237,8 @@ export default {
         this.$message.success('删除成功')
       })
     },
-    handle2Notice (record) {
-      this.$router.push({ path: `/project/notice-list`, query: { 'projectId': record.id, 'projectName': record.project_name } })
-    },
-    handle2Text (record) {
-      this.$router.push({ path: `/project/text-list`, query: { 'projectId': record.id, 'projectName': record.project_name } })
-    },
-    handle2Version (record) {
-      this.$router.push({ path: `/project/version-list`, query: { 'projectId': record.id, 'projectName': record.project_name } })
-    },
-    handle2Feedback (record) {
-      this.$router.push({ path: `/project/feedback-list`, query: { 'projectId': record.id, 'projectName': record.project_name } })
+    handle2Page (page, record) {
+      this.$router.push({ path: `/project/${page}-list`, query: { 'projectId': record.id, 'projectName': record.project_name } })
     }
   }
 }

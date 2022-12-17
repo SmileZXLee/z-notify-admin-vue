@@ -12,7 +12,7 @@
           <div class="header">
             <a href="/">
               <img src="~@/assets/logo.svg" class="logo" alt="logo">
-              <span class="title">Z-Notify</span>
+              <span class="title">Z-Notify-Admin</span>
             </a>
           </div>
           <div class="desc">

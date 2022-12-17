@@ -141,12 +141,11 @@ export default {
       */
      localStorage.setItem('account', this.account)
       this.$router.push({ path: '/' })
-      // 延迟 1 秒显示欢迎信息
       setTimeout(() => {
         this.$notification.success({
           message: '欢迎',
           description: `${timeFix()}，欢迎回来`,
-          duration: 1
+          duration: 2
         })
       }, 500)
     }

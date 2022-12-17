@@ -57,10 +57,10 @@
           </template>
         </span>
         <span slot="content" slot-scope="text">
-          <ellipsis :length="30" tooltip>{{ text }}</ellipsis>
+          <ellipsis :length="30" tooltip>{{ text || '-' }}</ellipsis>
         </span>
         <span slot="download_url" slot-scope="text">
-          <ellipsis :length="30" tooltip>{{ text }}</ellipsis>
+          <ellipsis :length="30" tooltip>{{ text || '-' }}</ellipsis>
         </span>
       </s-table>
 
@@ -87,15 +87,18 @@ import CreateVersion from '../modules/CreateVersion'
 const columns = [
   {
     title: '版本号',
+    align: 'center',
     dataIndex: 'version'
   },
   {
     title: '更新内容',
+    align: 'center',
     dataIndex: 'content',
     scopedSlots: { customRender: 'content' }
   },
   {
     title: '下载地址',
+    align: 'center',
     dataIndex: 'download_url',
     scopedSlots: { customRender: 'download_url' }
   },
@@ -103,6 +106,7 @@ const columns = [
     title: '操作',
     dataIndex: 'action',
     width: '150px',
+    align: 'center',
     scopedSlots: { customRender: 'action' }
   }
 ]

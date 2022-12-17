@@ -1,25 +1,39 @@
 <template>
   <page-header-wrapper :title="`${projectName}-${pageTitle}`">
+    <a-card :bordered="false" style="margin-bottom: 10px">
+      <a-row :gutter="10">
+        <a-col :span="20" style="display: flex;align-items: center;">
+          <strong style="margin-right: 10px">记录统计API:</strong>
+          <a-input style="flex: 1;" :value="statisticsApiUrl" readonly></a-input>
+        </a-col>
+        <a-col :span="4">
+          <a-button :span="4" type="primary" v-clipboard:copy="statisticsApiUrl" v-clipboard:success="onCopySuccess">复制到剪贴板</a-button>
+        </a-col>
+      </a-row>
+      <a-row :gutter="10" style="margin-top: 10px">
+        <a-col :span="20" style="display: flex;align-items: center;">
+          <strong style="margin-right: 10px">记录并展示Badge:</strong>
+          <a-input style="flex: 1;" :value="statisticsAndBadgeApiUrl" readonly></a-input>
+        </a-col>
+        <a-col :span="4">
+          <a-button :span="4" type="primary" v-clipboard:copy="statisticsAndBadgeApiUrl" v-clipboard:success="onCopySuccess">复制到剪贴板</a-button>
+        </a-col>
+      </a-row>
+    </a-card>
     <a-card :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="key">
-                <a-input v-model="queryParam.keyword" placeholder="请输入key"/>
-              </a-form-item>
+              &nbsp;
             </a-col>
             <a-col :md="16" :sm="16">
               <span class="table-page-search-submitButtons" style="display: flex;justify-content: flex-end;">
-                <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
-                <a-button style="margin-left: 8px" @click="() => this.queryParam = {}">重置</a-button>
+                <a-button type="primary" @click="$refs.table.refresh(true)">刷新</a-button>
               </span>
             </a-col>
           </a-row>
         </a-form>
-      </div>
-      <div class="table-operator">
-        <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
       </div>
 
       <s-table
@@ -36,7 +50,7 @@
             <a-divider type="vertical" />
             <a-popconfirm
               placement="topLeft"
-              title="确定要删除这条文本吗？"
+              title="确定要删除吗？"
               ok-text="删除"
               cancel-text="取消"
               @confirm="handleDelete(record)"
@@ -45,17 +59,12 @@
             </a-popconfirm>
           </template>
         </span>
-        <span slot="value" slot-scope="text">
-          <ellipsis :length="15" tooltip>{{ text }}</ellipsis>
-        </span>
-        <span slot="api_address" slot-scope="text, record">
-          <template>
-            <a v-clipboard:copy="getApiAddress(record)" v-clipboard:success="onCopySuccess">点击复制</a>
-          </template>
+        <span slot="tag" slot-scope="text">
+          <ellipsis :length="30" tooltip>{{ text || '-' }}</ellipsis>
         </span>
       </s-table>
 
-      <create-text
+      <create-version
         ref="createModal"
         :visible="visible"
         :loading="confirmLoading"
@@ -70,40 +79,32 @@
 
 <script>
 import { STable, Ellipsis } from '@/components'
-import { getTextList, createText, updateText, deleteText } from '@/api/text'
+import { getStatisticsList, createVersion, updateVersion, deleteVersion } from '@/api/statistics'
 
 import StepByStepModal from '../modules/StepByStepModal'
-import CreateText from '../modules/CreateText'
+import CreateVersion from '../modules/CreateVersion'
 
 const columns = [
   {
-    title: '文本key',
+    title: 'ip',
     align: 'center',
-    dataIndex: 'key'
+    dataIndex: 'ip'
   },
   {
-    title: '文本value',
-    dataIndex: 'value',
+    title: 'ip归属地',
     align: 'center',
-    scopedSlots: { customRender: 'value' }
+    dataIndex: 'ip_region'
   },
   {
-    title: '创建时间',
+    title: '标签',
+    align: 'center',
+    dataIndex: 'tag',
+    scopedSlots: { customRender: 'tag' }
+  },
+  {
+    title: '访问时间',
     align: 'center',
     dataIndex: 'createtime'
-  },
-  {
-    title: 'API地址',
-    dataIndex: 'api_address',
-    align: 'center',
-    scopedSlots: { customRender: 'api_address' }
-  },
-  {
-    title: '操作',
-    dataIndex: 'action',
-    width: '150px',
-    align: 'center',
-    scopedSlots: { customRender: 'action' }
   }
 ]
 
@@ -112,7 +113,7 @@ export default {
   components: {
     STable,
     Ellipsis,
-    CreateText,
+    CreateVersion,
     StepByStepModal
   },
   data () {
@@ -125,14 +126,18 @@ export default {
       visible: false,
       confirmLoading: false,
       mdl: null,
+      currentDowenloadUrl: '',
       // 查询参数
       queryParam: {},
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         const requestParameters = Object.assign({}, parameter, this.queryParam)
         console.log('loadData request parameters:', requestParameters)
-        return getTextList(this.projectId, requestParameters)
+        return getStatisticsList(this.projectId, requestParameters)
           .then(res => {
+            if (res.data.results.length) {
+              this.currentDowenloadUrl = res.data.results[0].download_url
+            }
             return res.data
           })
       },
@@ -140,9 +145,18 @@ export default {
       selectedRows: []
     }
   },
+  computed: {
+    statisticsApiUrl () {
+      return this.projectId ? `${process.env.VUE_APP_API_BASE_URL}/v1/public/statistics/${this.projectId}` : '无'
+    },
+    statisticsAndBadgeApiUrl () {
+      return this.projectId ? `${process.env.VUE_APP_API_BASE_URL}/v1/public/statistics/${this.projectId}/badge` : '无'
+    }
+  },
   methods: {
     handleAdd () {
-      this.mdl = null
+      console.log(this.$route.params)
+      this.mdl = { download_url: this.currentDowenloadUrl }
       this.visible = true
     },
     handleEdit (record) {
@@ -156,8 +170,8 @@ export default {
         if (!errors) {
           values.project_id = this.projectId
           if (values.id) {
-            // 新增
-            updateText(values).then(res => {
+            // 更新
+            updateVersion(values).then(res => {
               this.visible = false
               // 重置表单数据
               form.resetFields()
@@ -171,7 +185,7 @@ export default {
             })
           } else {
             // 新增
-            createText(values).then(res => {
+            createVersion(values).then(res => {
               this.visible = false
               // 重置表单数据
               form.resetFields()
@@ -196,7 +210,7 @@ export default {
       form.resetFields() // 清理表单数据（可不做）
     },
     handleDelete (record) {
-      deleteText(record.id).then(res => {
+      deleteVersion(record.id).then(res => {
         this.$refs.table.refresh()
         this.$message.success('删除成功')
       })
@@ -207,9 +221,6 @@ export default {
     },
     onCopySuccess () {
       this.$message.success('已复制到剪贴板')
-    },
-    getApiAddress (record) {
-      return record.key ? `${process.env.VUE_APP_API_BASE_URL}/v1/public/text/${this.projectId}/${record.key}` : '无'
     }
   }
 }

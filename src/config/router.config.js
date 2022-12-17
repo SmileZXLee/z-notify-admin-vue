@@ -93,6 +93,13 @@ export const asyncRouterMap = [
                 hide: true,
                 component: () => import('@/views/project/feedback/FeedbackList'),
                 meta: { title: '反馈管理', hidden: true, permission: ['table'] }
+              },
+              {
+                path: '/project/statistics-list',
+                name: 'StatisticsList',
+                hide: true,
+                component: () => import('@/views/project/statistics/StatisticsList'),
+                meta: { title: '统计管理', hidden: true, permission: ['table'] }
               }
             ]
           }
