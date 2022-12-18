@@ -1,8 +1,7 @@
 <template>
-  <div :style="{ padding: '0 0 32px 32px' }">
-    <h4 :style="{ marginBottom: '20px' }">{{ title }}</h4>
+  <div>
     <v-chart
-      height="254"
+      height="300"
       :data="data"
       :forceFit="true"
       :padding="['auto', 'auto', '40', '50']">

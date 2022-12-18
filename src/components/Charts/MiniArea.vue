@@ -1,7 +1,7 @@
 <template>
   <div class="antv-chart-mini">
     <div class="chart-wrapper" :style="{ height: 46 }">
-      <v-chart :force-fit="true" :height="height" :data="data" :padding="[36, 0, 18, 0]">
+      <v-chart :force-fit="true" :height="height" :data="chartData" :padding="[36, 0, 18, 0]">
         <v-tooltip />
         <v-smooth-area position="x*y" />
       </v-chart>
@@ -11,13 +11,13 @@
 
 <script>
 import moment from 'moment'
-const data = []
+const orginData = []
 const beginDay = new Date().getTime()
 
 for (let i = 0; i < 10; i++) {
-  data.push({
-    x: moment(new Date(beginDay + 1000 * 60 * 60 * 24 * i)).format('YYYY-MM-DD'),
-    y: Math.round(Math.random() * 10)
+  orginData.push({
+    x: moment(new Date(beginDay - 1000 * 60 * 60 * 24 * i)).format('YYYY-MM-DD'),
+    y: 0
   })
 }
 
@@ -40,9 +40,25 @@ const scale = [{
 
 export default {
   name: 'MiniArea',
+  props: {
+    days10CountList: {
+      type: Array,
+      default: function () {
+        return []
+      }
+    }
+  },
+  computed: {
+    chartData () {
+      return this.orginData.map(data => {
+        data.y = (this.days10CountList.find(i => i.date === data.x) || { count: 0 }).count
+        return data
+      })
+    }
+  },
   data () {
     return {
-      data,
+      orginData,
       tooltip,
       scale,
       height: 100

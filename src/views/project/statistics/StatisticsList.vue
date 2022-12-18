@@ -24,11 +24,14 @@
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
           <a-row :gutter="48">
-            <a-col :md="8" :sm="24">
-              &nbsp;
+            <a-col :md="8" :sm="8">
+              <a-tag color="blue" style="font-size: 13px;font-weight: bold">
+                访问次数：{{ total }}
+              </a-tag>
             </a-col>
             <a-col :md="16" :sm="16">
               <span class="table-page-search-submitButtons" style="display: flex;justify-content: flex-end;">
+                <a-button type="primary" @click="handle2Analysis" style="margin-right: 15px">查看统计结果</a-button>
                 <a-button type="primary" @click="$refs.table.refresh(true)">刷新</a-button>
               </span>
             </a-col>
@@ -79,7 +82,7 @@
 
 <script>
 import { STable, Ellipsis } from '@/components'
-import { getStatisticsList, createVersion, updateVersion, deleteVersion } from '@/api/statistics'
+import { getStatisticsList } from '@/api/statistics'
 
 import StepByStepModal from '../modules/StepByStepModal'
 import CreateVersion from '../modules/CreateVersion'
@@ -122,6 +125,7 @@ export default {
       projectId: this.$route.query.projectId,
       projectName: this.$route.query.projectName,
       pageTitle: this.$route.meta.title,
+      total: 0,
       // create model
       visible: false,
       confirmLoading: false,
@@ -138,6 +142,7 @@ export default {
             if (res.data.results.length) {
               this.currentDowenloadUrl = res.data.results[0].download_url
             }
+            this.total = res.data.total
             return res.data
           })
       },
@@ -154,66 +159,8 @@ export default {
     }
   },
   methods: {
-    handleAdd () {
-      console.log(this.$route.params)
-      this.mdl = { download_url: this.currentDowenloadUrl }
-      this.visible = true
-    },
-    handleEdit (record) {
-      this.visible = true
-      this.mdl = { ...record }
-    },
-    handleOk () {
-      const form = this.$refs.createModal.form
-      this.confirmLoading = true
-      form.validateFields((errors, values) => {
-        if (!errors) {
-          values.project_id = this.projectId
-          if (values.id) {
-            // 更新
-            updateVersion(values).then(res => {
-              this.visible = false
-              // 重置表单数据
-              form.resetFields()
-              // 刷新表格
-              this.$refs.table.refresh()
-
-              this.$message.success('更新成功')
-            })
-            .finally(() => {
-              this.confirmLoading = false
-            })
-          } else {
-            // 新增
-            createVersion(values).then(res => {
-              this.visible = false
-              // 重置表单数据
-              form.resetFields()
-              // 刷新表格
-              this.$refs.table.refresh()
-
-              this.$message.success('创建成功')
-            })
-            .finally(() => {
-              this.confirmLoading = false
-            })
-          }
-        } else {
-          this.confirmLoading = false
-        }
-      })
-    },
-    handleCancel () {
-      this.visible = false
-
-      const form = this.$refs.createModal.form
-      form.resetFields() // 清理表单数据（可不做）
-    },
-    handleDelete (record) {
-      deleteVersion(record.id).then(res => {
-        this.$refs.table.refresh()
-        this.$message.success('删除成功')
-      })
+    handle2Analysis () {
+      this.$router.push({ path: `/project/statistics-list/analysis`, query: { 'projectId': this.projectId, 'projectName': this.projectName } })
     },
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
