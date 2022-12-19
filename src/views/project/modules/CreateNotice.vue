@@ -14,7 +14,7 @@
           <a-input v-decorator="['id', { initialValue: null }]" disabled />
         </a-form-item>
         <a-form-item label="通知标题">
-          <a-input placeholder="请输入通知标题" :maxlength="10" show-count v-decorator="['title', {rules: [{required: true, max: 10, message: '通知标题不能为空且不能超过10个字符'}]}]" />
+          <a-input placeholder="请输入通知标题" :maxlength="10" show-count v-decorator="['title', {rules: [{required: true, max: 100, message: '通知标题不能为空且不能超过100个字符'}]}]" />
         </a-form-item>
         <a-form-item label="通知内容">
           <a-textarea :maxlength="200" show-count :autosize="{ minRows: 2, maxRows: 3 }" placeholder="请输入通知内容" v-decorator="['content', {rules: [{required: true, max: 200, message: '通知内容不能为空且不能超过200个字符'}]}]" />

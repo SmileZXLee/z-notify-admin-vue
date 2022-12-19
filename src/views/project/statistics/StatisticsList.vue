@@ -31,7 +31,7 @@
             </a-col>
             <a-col :md="16" :sm="16">
               <span class="table-page-search-submitButtons" style="display: flex;justify-content: flex-end;">
-                <a-button type="primary" @click="handle2Analysis" style="margin-right: 15px">查看统计结果</a-button>
+                <a-button type="primary" @click="handle2Analysis" style="margin-right: 15px">查看统计分析</a-button>
                 <a-button type="primary" @click="$refs.table.refresh(true)">刷新</a-button>
               </span>
             </a-col>
