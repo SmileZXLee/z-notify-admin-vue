@@ -18,15 +18,15 @@
 
 
 ## 主要功能
-- [x] 版本管理
+- [x] 版本管理，通过公共接口返回所有新版本号、更新内容、下载地址
 
-- [x] 通知管理
+- [x] 通知管理，支持发布通知和设置过期时间，通过公共接口获取所有未过期的通知
 
-- [x] 通用文本管理
+- [x] 通用文本管理，可以随意自定义key并通过公共接口获取key对应的文本
 
-- [x] 反馈管理
+- [x] 反馈管理，提供用户反馈提交页，用户提交后可在管理后台查看并回复，用户可在反馈页查看开发者回复的内容
 
-- [ ] 用户流量统计
+- [x] 用户流量统计&分析，示例：[![statistics](https://api.z-notify.zxlee.cn/v1/public/statistics/8292724618483712000/badge?color=1890ff&style=flat&title=页面访问统计示例)](https://api.z-notify.zxlee.cn/swagger-ui/index.html#/公共接口/visitAndGetStatisticsOnBadgeUsingGET)，流量分析可在管理后台查看
 
 预览
 ----
@@ -70,4 +70,4 @@ Modern browsers and IE10.
 | IE10, Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
 
 ## 其他功能
-正在开发(有空慢慢完善)
+正在开发...
