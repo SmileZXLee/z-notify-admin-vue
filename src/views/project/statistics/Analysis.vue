@@ -9,7 +9,7 @@
           <div>
             <trend :flag="analysisData.today_visitor_count < analysisData.yesterday_visitor_count ? 'down' : 'up'">
               <span slot="term">{{ $t('dashboard.analysis.day') }}</span>
-              {{ ((analysisData.today_visitor_count - analysisData.yesterday_visitor_count) / (analysisData.yesterday_visitor_count || 1)).toFixed(1) + '%' }}
+              {{ ((analysisData.today_visitor_count - analysisData.yesterday_visitor_count) / (analysisData.yesterday_visitor_count || 1) * 100).toFixed(1) + '%' }}
             </trend>
           </div>
           <template slot="footer">日访问人数 <span>{{ analysisData.today_visitor_count | NumberFormat }}</span></template>
