@@ -70,4 +70,4 @@ Modern browsers and IE10.
 | IE10, Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
 
 ## 其他功能
-正在开发(有空慢慢完善)
+正在开发...
