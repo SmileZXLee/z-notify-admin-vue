@@ -7,7 +7,7 @@
       :padding="['auto', 'auto', '40', '50']">
       <v-tooltip />
       <v-axis />
-      <v-bar position="x*y"/>
+      <v-bar position="x*count"/>
     </v-chart>
   </div>
 </template>

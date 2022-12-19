@@ -9,7 +9,7 @@
           <div>
             <trend :flag="analysisData.today_visitor_count < analysisData.yesterday_visitor_count ? 'down' : 'up'">
               <span slot="term">{{ $t('dashboard.analysis.day') }}</span>
-              {{ (analysisData.today_visitor_count - analysisData.yesterday_visitor_count) / (analysisData.yesterday_visitor_count || 1) + '%' }}
+              {{ ((analysisData.today_visitor_count - analysisData.yesterday_visitor_count) / (analysisData.yesterday_visitor_count || 1)).toFixed(1) + '%' }}
             </trend>
           </div>
           <template slot="footer">日访问人数 <span>{{ analysisData.today_visitor_count | NumberFormat }}</span></template>
@@ -63,7 +63,7 @@
                   <v-axis />
                   <!-- position="right" :offsetX="-140" -->
                   <v-legend dataKey="item"/>
-                  <v-pie position="count" color="item" :vStyle="pieStyle" />
+                  <v-pie position="percent" color="item" :vStyle="pieStyle" :label="['count', {formatter: (val, item) => { return item.point.item + ': ' + val + '次'}}]" />
                   <v-coord type="theta" :radius="0.75" :innerRadius="0.6" />
                 </v-chart>
               </div>
@@ -160,7 +160,7 @@ export default {
       this.analysisData = res.data
       this.hasMonth12BarData = res.data.months12_count_list.length
       this.month12BarData = this.month12BarData.map(data => {
-        data.y = (res.data.months12_count_list.find(m => {
+        data.count = (res.data.months12_count_list.find(m => {
           const mDate = m.date.substring(2, 7).replace('-', '/')
           return mDate === data.x
         }) || { count: 0 }).count

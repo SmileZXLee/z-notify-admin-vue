@@ -3,7 +3,7 @@
     <a-card :bordered="false" style="margin-bottom: 10px">
       <a-row :gutter="10">
         <a-col :span="20" style="display: flex;align-items: center;">
-          <strong style="margin-right: 10px">记录统计API:</strong>
+          <strong style="margin-right: 10px">上传统计API:</strong>
           <a-input style="flex: 1;" :value="statisticsApiUrl" readonly></a-input>
         </a-col>
         <a-col :span="4">
@@ -12,7 +12,7 @@
       </a-row>
       <a-row :gutter="10" style="margin-top: 10px">
         <a-col :span="20" style="display: flex;align-items: center;">
-          <strong style="margin-right: 10px">记录并展示Badge:</strong>
+          <strong style="margin-right: 10px">上传并展示Badge:</strong>
           <a-input style="flex: 1;" :value="statisticsAndBadgeApiUrl" readonly></a-input>
         </a-col>
         <a-col :span="4">
