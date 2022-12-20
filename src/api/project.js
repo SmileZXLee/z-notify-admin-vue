@@ -2,6 +2,7 @@ import request from '@/utils/request'
 
 const api = {
   getProjectList: '/v1/project/projects',
+  getProjectListForSelect: '/v1/project/projects/select',
   createProject: '/v1/project/project',
   updateProject: '/v1/project/project',
   deleteProject: '/v1/project/project'
@@ -15,6 +16,14 @@ export function getProjectList (params) {
     url: api.getProjectList,
     method: 'get',
     params
+  })
+}
+
+// 查询项目列表（下拉框）
+export function getProjectListForSelect () {
+  return request({
+    url: api.getProjectListForSelect,
+    method: 'get'
   })
 }
 
