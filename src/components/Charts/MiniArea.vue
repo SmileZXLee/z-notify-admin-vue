@@ -11,20 +11,15 @@
 
 <script>
 import moment from 'moment'
-const orginData = []
-const beginDay = new Date().getTime()
-
-for (let i = 0; i < 10; i++) {
-  orginData.push({
-    x: moment(new Date(beginDay - 1000 * 60 * 60 * 24 * i)).format('YYYY-MM-DD'),
-    count: 0
-  })
-}
 
 export default {
   name: 'MiniArea',
   props: {
-    days10CountList: {
+    type: {
+      type: String,
+      default: 'date'
+    },
+    list: {
       type: Array,
       default: function () {
         return []
@@ -34,16 +29,36 @@ export default {
   computed: {
     chartData () {
       return this.orginData.map(data => {
-        data.count = (this.days10CountList.find(i => i.date === data.x) || { count: 0 }).count
+        data.count = (this.list.find(i => (i[this.type] + (this.type === 'hour' ? '点' : '')) === data.x + '') || { count: 0 }).count
         return data
       })
     }
   },
   data () {
     return {
-      orginData,
+      orginData: [],
       height: 100
     }
+  },
+  mounted () {
+    const orginData = []
+    if (this.type === 'date') {
+      const beginDay = new Date().getTime()
+      for (let i = 0; i < 7; i++) {
+        orginData.push({
+          x: moment(new Date(beginDay - 1000 * 60 * 60 * 24 * i)).format('YYYY-MM-DD'),
+          count: 0
+        })
+      }
+    } else if (this.type === 'hour') {
+      for (let i = 0; i < 24; i++) {
+        orginData.push({
+          x: i + '点',
+          count: 0
+        })
+      }
+    }
+    this.orginData = orginData
   }
 }
 </script>

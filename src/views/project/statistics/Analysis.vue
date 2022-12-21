@@ -15,8 +15,38 @@
     </template>
     <template v-if="!noProject">
       <a-row :gutter="24">
+        <!-- 今日访问次数 -->
         <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-          <chart-card :loading="loading" title="总访问人数" :total="analysisData.visitor_count">
+          <chart-card style="height: 170px;" :loading="loading" title="今日访问次数" :total="analysisData.today_view_count | NumberFormat">
+            <a-tooltip title="今日访问次数" slot="action">
+              <a-icon type="info-circle-o" />
+            </a-tooltip>
+            <div>
+              <mini-area type="hour" :list="analysisData.hour24_count_list"/>
+            </div>
+            <template slot="footer">
+              <trend :flag="analysisData.today_view_count < analysisData.yesterday_view_count ? 'down' : 'up'">
+                <span slot="term">{{ $t('dashboard.analysis.day') }}</span>
+                {{ ((analysisData.today_view_count - analysisData.yesterday_view_count) / (analysisData.yesterday_view_count || 1) * 100).toFixed(1) + '%' }}
+              </trend>
+            </template>
+          </chart-card>
+        </a-col>
+        <!-- 近7日访问次数 -->
+        <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+          <chart-card style="height: 170px;" :loading="loading" title="近7日访问次数" :total="analysisData.days7_view_count | NumberFormat">
+            <a-tooltip title="近7日访问次数" slot="action">
+              <a-icon type="info-circle-o" />
+            </a-tooltip>
+            <div>
+              <mini-area type="date" :list="analysisData.days10_count_list"/>
+            </div>
+            <template slot="footer">-</template>
+          </chart-card>
+        </a-col>
+        <!-- 总访问人数 -->
+        <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+          <chart-card style="height: 170px;" :loading="loading" title="总访问人数" :total="analysisData.visitor_count">
             <a-tooltip title="根据ip区分，相同ip只算一次" slot="action">
               <a-icon type="info-circle-o" />
             </a-tooltip>
@@ -26,34 +56,19 @@
                 {{ ((analysisData.today_visitor_count - analysisData.yesterday_visitor_count) / (analysisData.yesterday_visitor_count || 1) * 100).toFixed(1) + '%' }}
               </trend>
             </div>
-            <template slot="footer">日访问人数 <span>{{ analysisData.today_visitor_count | NumberFormat }}</span></template>
+            <template slot="footer">今日访问人数 <span>{{ analysisData.today_visitor_count | NumberFormat }}</span></template>
           </chart-card>
         </a-col>
+        <!-- 总访问次数 -->
         <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-          <chart-card :loading="loading" title="总访问次数" :total="analysisData.view_count | NumberFormat">
+          <chart-card style="height: 170px;" :loading="loading" title="总访问次数" :total="analysisData.view_count | NumberFormat">
             <a-tooltip title="所有ip的所有访问次数" slot="action">
               <a-icon type="info-circle-o" />
             </a-tooltip>
             <div>
-              <mini-area :days10CountList="analysisData.days10_count_list"/>
+              IP归属地总个数 <span> {{ analysisData.ip_region_count_list.length | NumberFormat }}</span>
             </div>
-            <template slot="footer">日访问次数 <span> {{ analysisData.today_view_count | NumberFormat }}</span></template>
-          </chart-card>
-        </a-col>
-        <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-          <chart-card :loading="loading" title="近7日总访问次数" :total="analysisData.days7_view_count | NumberFormat">
-            <a-tooltip title="近7日总访问次数" slot="action">
-              <a-icon type="info-circle-o" />
-            </a-tooltip>
-            <template slot="footer">-</template>
-          </chart-card>
-        </a-col>
-        <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-          <chart-card :loading="loading" title="近30日总访问次数" :total="analysisData.days30_view_count | NumberFormat">
-            <a-tooltip title="近30日总访问次数" slot="action">
-              <a-icon type="info-circle-o" />
-            </a-tooltip>
-            <template slot="footer">-</template>
+            <template slot="footer">近30日访问次数 <span> {{ analysisData.days30_view_count | NumberFormat }}</span></template>
           </chart-card>
         </a-col>
       </a-row>
