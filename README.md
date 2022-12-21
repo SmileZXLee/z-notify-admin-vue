@@ -30,7 +30,7 @@
 
 预览
 ----
-[https://admin.z-notify.zxlee.cn](https://admin.z-notify.zxlee.cn)
+[![overview](https://admin.z-notify.zxlee.cn/public/demo-analysis.jpg)](https://admin.z-notify.zxlee.cn)
  
 项目下载和运行
 ----
