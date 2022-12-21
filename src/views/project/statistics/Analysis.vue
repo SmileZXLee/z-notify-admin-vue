@@ -8,7 +8,8 @@
             <a-select v-model="currentProjectItem" :labelInValue="true" :options="projectOptions" placeholder="无可选项目" style="width: 200px;"></a-select>
           </div>
         </template>
-        <a-button type="primary" @click="doGetStatisticsAnalysis" style="margin-left: 10px;">刷新</a-button>
+        <a-button v-if="!noProject" type="primary" icon="ordered-list" @click="handle2StatisticsDetail" style="margin-left: 10px;">查看统计详情</a-button>
+        <a-button type="primary" icon="sync" @click="doGetStatisticsAnalysis" style="margin-left: 10px;">刷新</a-button>
 
       </div>
     </template>
@@ -233,6 +234,9 @@ export default {
       }).finally(() => {
         this.loading = false
       })
+    },
+    handle2StatisticsDetail () {
+      this.$router.push({ path: `/project/statistics-list`, query: { 'projectId': this.projectId, 'projectName': this.projectName } })
     }
   }
 }
