@@ -25,10 +25,11 @@
               <mini-area type="hour" :list="analysisData.hour24_count_list"/>
             </div>
             <template slot="footer">
-              <trend :flag="analysisData.today_view_count < analysisData.yesterday_view_count ? 'down' : 'up'">
-                <span slot="term">{{ $t('dashboard.analysis.day') }}</span>
+              <trend v-if="analysisData.yesterday_view_count" :flag="analysisData.today_view_count < analysisData.yesterday_view_count ? 'down' : 'up'">
+                <span slot="term">比昨日</span>
                 {{ ((analysisData.today_view_count - analysisData.yesterday_view_count) / (analysisData.yesterday_view_count || 1) * 100).toFixed(1) + '%' }}
               </trend>
+              <span v-else>-</span>
             </template>
           </chart-card>
         </a-col>
@@ -41,7 +42,13 @@
             <div>
               <mini-area type="date" :list="analysisData.days10_count_list"/>
             </div>
-            <template slot="footer">-</template>
+            <template slot="footer">
+              <trend v-if="analysisData.last_days7_view_count" :flag="analysisData.days7_view_count < analysisData.last_days7_view_count ? 'down' : 'up'">
+                <span slot="term">比上个7日</span>
+                {{ ((analysisData.days7_view_count - analysisData.last_days7_view_count) / (analysisData.last_days7_view_count) * 100).toFixed(1) + '%' }}
+              </trend>
+              <span v-else>-</span>
+            </template>
           </chart-card>
         </a-col>
         <!-- 总访问人数 -->
@@ -51,12 +58,15 @@
               <a-icon type="info-circle-o" />
             </a-tooltip>
             <div>
-              <trend :flag="analysisData.today_visitor_count < analysisData.yesterday_visitor_count ? 'down' : 'up'">
-                <span slot="term">{{ $t('dashboard.analysis.day') }}</span>
+              今日访问人数 <span>{{ analysisData.today_visitor_count | NumberFormat }}</span>
+            </div>
+            <template slot="footer">
+              <trend v-if="analysisData.yesterday_visitor_count" :flag="analysisData.today_visitor_count < analysisData.yesterday_visitor_count ? 'down' : 'up'">
+                <span slot="term">比昨日</span>
                 {{ ((analysisData.today_visitor_count - analysisData.yesterday_visitor_count) / (analysisData.yesterday_visitor_count || 1) * 100).toFixed(1) + '%' }}
               </trend>
-            </div>
-            <template slot="footer">今日访问人数 <span>{{ analysisData.today_visitor_count | NumberFormat }}</span></template>
+              <span v-else>-</span>
+            </template>
           </chart-card>
         </a-col>
         <!-- 总访问次数 -->
