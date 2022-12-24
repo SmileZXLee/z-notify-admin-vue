@@ -54,9 +54,16 @@
         <!-- 总访问人数 -->
         <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
           <chart-card style="height: 170px;" :loading="loading" title="总访问人数" :total="analysisData.visitor_count">
-            <a-tooltip title="根据ip区分，相同ip只算一次" slot="action">
-              <a-icon type="info-circle-o" />
-            </a-tooltip>
+            <template slot="action">
+              <a-radio-group size="small" :default-value="visitorBy" button-style="solid" @change="onVisitorByChange">
+                <a-radio-button value="ip">
+                  按ip
+                </a-radio-button>
+                <a-radio-button value="tag">
+                  按tag
+                </a-radio-button>
+              </a-radio-group>
+            </template>
             <div>
               今日访问人数 <span>{{ analysisData.today_visitor_count | NumberFormat }}</span>
             </div>
@@ -72,7 +79,7 @@
         <!-- 总访问次数 -->
         <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
           <chart-card style="height: 170px;" :loading="loading" title="总访问次数" :total="analysisData.view_count | NumberFormat">
-            <a-tooltip title="所有ip的所有访问次数" slot="action">
+            <a-tooltip title="总访问次数" slot="action">
               <a-icon type="info-circle-o" />
             </a-tooltip>
             <div>
@@ -97,7 +104,7 @@
             <a-card class="antd-pro-pages-dashboard-analysis-salesCard" :loading="loading" :bordered="false" title="各IP归属地占比" :style="{ height: '100%' }">
               <div>
                 <div v-if="ipRegionPieData.length">
-                  <v-chart :force-fit="true" :height="300" :data="ipRegionPieData" :scale="pieScale">
+                  <v-chart :force-fit="true" :height="285" :data="ipRegionPieData" :scale="pieScale" style="margin-bottom: 15px;">
                     <v-tooltip :showTitle="false" dataKey="item*percent" />
                     <v-axis />
                     <!-- position="right" :offsetX="-140" -->
@@ -174,6 +181,7 @@ export default {
       projectId: this.$route.query.projectId,
       projectName: this.$route.query.projectName,
       pageTitle: this.$route.meta.title,
+      visitorBy: localStorage.getItem('visitorBy') || 'ip',
       currentProjectItem: null,
       noProject: false,
       analysisData: {
@@ -235,7 +243,7 @@ export default {
   methods: {
     doGetStatisticsAnalysis () {
       this.loading = true
-      getStatisticsAnalysis(this.projectId).then(res => {
+      getStatisticsAnalysis(this.projectId, { visitor_by: this.visitorBy }).then(res => {
         this.analysisData = res.data
         this.hasMonth12BarData = res.data.months12_count_list.length
         this.month12BarData = this.month12BarData.map(data => {
@@ -245,7 +253,6 @@ export default {
           }) || { count: 0 }).count
           return data
         })
-
         const dv = new DataSet.View().source(res.data.ip_region_count_list.map(data => {
           return { item: data.region, count: data.count }
         }))
@@ -262,12 +269,26 @@ export default {
     },
     handle2StatisticsDetail () {
       this.$router.push({ path: `/project/statistics-list`, query: { 'projectId': this.projectId, 'projectName': this.projectName } })
+    },
+    onVisitorByChange (e) {
+      this.visitorBy = e.target.value
+      localStorage.setItem('visitorBy', e.target.value)
+      this.doGetStatisticsAnalysis()
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
+  /deep/ .ant-radio-group{
+    font-size: 12px;
+  }
+  /deep/ .chart-card-header .meta{
+    line-height: 25px;
+  }
+  /deep/ .ant-card-body{
+    padding: 12px 20px 8px 20px !important;
+  }
   .empty {
     width: 100%;
     height: 300px;
