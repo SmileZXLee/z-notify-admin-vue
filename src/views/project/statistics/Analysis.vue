@@ -53,19 +53,22 @@
         </a-col>
         <!-- 总访问人数 -->
         <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-          <chart-card style="height: 170px;" :loading="loading" title="总访问人数" :total="analysisData.visitor_count">
+          <chart-card style="height: 170px;" :loading="loading" title="今日访问人数" :total="analysisData.today_visitor_count | NumberFormat">
             <template slot="action">
-              <a-radio-group size="small" :default-value="visitorBy" button-style="solid" @change="onVisitorByChange">
+              <a-radio-group v-model="visitorBy" size="small" button-style="solid" @change="onVisitorByChange">
                 <a-radio-button value="ip">
-                  按ip
+                  IP
                 </a-radio-button>
                 <a-radio-button value="tag">
-                  按tag
+                  TAG
                 </a-radio-button>
               </a-radio-group>
+              <a-tooltip :title="`根据${visitorBy}统计访问人数，相同${visitorBy}的多次访问计为一次`" slot="action" style="margin-left: 10px">
+                <a-icon type="info-circle-o" />
+              </a-tooltip>
             </template>
             <div>
-              今日访问人数 <span>{{ analysisData.today_visitor_count | NumberFormat }}</span>
+              总访问人数 <span>{{ analysisData.visitor_count | NumberFormat }}</span>
             </div>
             <template slot="footer">
               <trend v-if="analysisData.yesterday_visitor_count" :flag="analysisData.today_visitor_count < analysisData.yesterday_visitor_count ? 'down' : 'up'">
@@ -83,9 +86,11 @@
               <a-icon type="info-circle-o" />
             </a-tooltip>
             <div>
-              IP归属地总个数 <span> {{ analysisData.ip_region_count_list.length | NumberFormat }}</span>
+              近30日访问次数 <span> {{ analysisData.days30_view_count | NumberFormat }}</span>
             </div>
-            <template slot="footer">近30日访问次数 <span> {{ analysisData.days30_view_count | NumberFormat }}</span></template>
+            <template slot="footer">
+              IP归属地总个数 <span> {{ analysisData.ip_region_count_list.length | NumberFormat }}</span>
+            </template>
           </chart-card>
         </a-col>
       </a-row>
@@ -271,7 +276,6 @@ export default {
       this.$router.push({ path: `/project/statistics-list`, query: { 'projectId': this.projectId, 'projectName': this.projectName } })
     },
     onVisitorByChange (e) {
-      this.visitorBy = e.target.value
       localStorage.setItem('visitorBy', e.target.value)
       this.doGetStatisticsAnalysis()
     }
