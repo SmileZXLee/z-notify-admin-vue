@@ -33,25 +33,7 @@
             </template>
           </chart-card>
         </a-col>
-        <!-- 近7日访问次数 -->
-        <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-          <chart-card style="height: 170px;" :loading="loading" title="近7日访问次数" :total="analysisData.days7_view_count | NumberFormat">
-            <a-tooltip title="近7日访问次数" slot="action">
-              <a-icon type="info-circle-o" />
-            </a-tooltip>
-            <div>
-              <mini-area type="date" :list="analysisData.days10_count_list"/>
-            </div>
-            <template slot="footer">
-              <trend v-if="analysisData.last_days7_view_count" :flag="analysisData.days7_view_count < analysisData.last_days7_view_count ? 'down' : 'up'">
-                <span slot="term">比上个7日</span>
-                {{ ((analysisData.days7_view_count - analysisData.last_days7_view_count) / (analysisData.last_days7_view_count) * 100).toFixed(1) + '%' }}
-              </trend>
-              <span v-else>-</span>
-            </template>
-          </chart-card>
-        </a-col>
-        <!-- 总访问人数 -->
+        <!-- 今日访问人数 -->
         <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
           <chart-card style="height: 170px;" :loading="loading" title="今日访问人数" :total="analysisData.today_visitor_count | NumberFormat">
             <template slot="action">
@@ -74,6 +56,24 @@
               <trend v-if="analysisData.yesterday_visitor_count" :flag="analysisData.today_visitor_count < analysisData.yesterday_visitor_count ? 'down' : 'up'">
                 <span slot="term">比昨日</span>
                 {{ ((analysisData.today_visitor_count - analysisData.yesterday_visitor_count) / (analysisData.yesterday_visitor_count || 1) * 100).toFixed(1) + '%' }}
+              </trend>
+              <span v-else>-</span>
+            </template>
+          </chart-card>
+        </a-col>
+        <!-- 近7日访问次数 -->
+        <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+          <chart-card style="height: 170px;" :loading="loading" title="近7日访问次数" :total="analysisData.days7_view_count | NumberFormat">
+            <a-tooltip title="近7日访问次数" slot="action">
+              <a-icon type="info-circle-o" />
+            </a-tooltip>
+            <div>
+              <mini-area type="date" :list="analysisData.days10_count_list"/>
+            </div>
+            <template slot="footer">
+              <trend v-if="analysisData.last_days7_view_count" :flag="analysisData.days7_view_count < analysisData.last_days7_view_count ? 'down' : 'up'">
+                <span slot="term">比上个7日</span>
+                {{ ((analysisData.days7_view_count - analysisData.last_days7_view_count) / (analysisData.last_days7_view_count) * 100).toFixed(1) + '%' }}
               </trend>
               <span v-else>-</span>
             </template>
