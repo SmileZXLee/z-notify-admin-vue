@@ -65,6 +65,9 @@
         <span slot="tag" slot-scope="text">
           <ellipsis :length="30" tooltip>{{ text || '-' }}</ellipsis>
         </span>
+        <span slot="from" slot-scope="text">
+          <ellipsis :length="30" tooltip>{{ text || '-' }}</ellipsis>
+        </span>
       </s-table>
 
       <create-version
@@ -97,6 +100,12 @@ const columns = [
     title: 'ip归属地',
     align: 'center',
     dataIndex: 'ip_region'
+  },
+  {
+    title: '来源',
+    align: 'center',
+    dataIndex: 'from',
+    scopedSlots: { customRender: 'from' }
   },
   {
     title: '标签',
